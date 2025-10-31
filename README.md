@@ -1,193 +1,148 @@
-# MERN Task Manager
+# Dockerized 2-Tier Web App with GitHub CI/CD
 
-A MERN application for basic tasks management.
-![image](https://user-images.githubusercontent.com/86913048/227101123-f8a35258-9c21-4479-86e8-055659ab75e2.png)
+## Project Overview
+This project demonstrates a **Dockerized 2-tier MERN application** (frontend + backend) deployed on an **Azure Linux VM** with a **MongoDB Atlas** database. It also includes a **GitHub Actions CI/CD pipeline** for automated building, pushing, and deploying of Docker images.
 
-## Table of Contents
+**Objective:**  
+- Containerize both backend and frontend using Docker  
+- Deploy containers on Azure VM  
+- Connect backend to MongoDB Atlas  
+- Automate CI/CD with GitHub Actions
 
-- [Features](#features)
-- [Tools and Technologies](#tools-and-technologies)
-- [Dependencies](#dependencies)
-- [Dev-dependencies](#dev-dependencies)
-- [Prerequisites](#prerequisites)
-- [Installation and setup](#installation-and-setup)
-- [Backend API](#backend-api)
-- [frontend pages](#frontend-pages)
-- [npm scripts](#npm-scripts)
-- [Useful Links](#useful-links)
-- [Contact](#contact)
+---
 
-## Features
+## Tools & Technologies
+- **Frontend:** React.js, Tailwind CSS, Nginx  
+- **Backend:** Node.js, Express.js, Mongoose  
+- **Database:** MongoDB Atlas  
+- **Containerization:** Docker, Docker Compose  
+- **CI/CD:** GitHub Actions  
+- **Cloud:** Microsoft Azure (Linux VM)  
+- **Other Tools:** Visual Studio Code, Postman  
 
-### User-side features
+---
+```
+## Architecture
+dockerized-2tier-app/
+│
+├── backend/
+│ ├── controllers/
+│ ├── models/
+│ ├── routes/
+│ ├── utils/
+│ ├── middlewares.js
+│ ├── .env
+│ ├── app.js
+│ └── package.json
+│
+├── frontend/
+│ ├── public/
+│ ├── src/
+│ ├── package.json
+│ ├── tailwind.config.js
+│ └── postcss.config.js
+│
+├── .github/workflows/deploy.yml
+├── docker-compose.yml
+├── README.md
+└── screenshots/
+```
 
-- Signup
-- Login
-- Logout
-- Add tasks
-- View tasks
-- Update tasks
-- Delete tasks
 
-### Developer-side features
+---
 
-- Toasts for success and error messages
-- Form validations in frontend and backend
-- Fully Responsive Navbar
-- Token based Authentication
-- Use of 404 page for wrong urls
-- Relevant redirects
-- Global user state using Redux
-- Custom Loaders
-- Use of layout component for pages
-- Use of theme colors
-- No external CSS files needed (made using Tailwind CSS)
-- Usage of Tooltips
-- Dynamic document titles
-- Redirect to previous page after login
-- Use of various React hooks
-- Custom hook also used (useFetch)
-- Routes protection
-- Middleware for verifying the user in backend
-- Use of different HTTP status codes for sending responses
-- Standard pratices followed
+## Setup & Installation
 
-## Tools and Technologies
+### 1. Clone the repository
+```bash
+git clone <your-repo-url>
+cd dockerized-2tier-app
 
-- HTML
-- CSS
-- Javascript
-- Tailwind CSS
-- Node.js
-- Express.js
-- React
-- Redux
-- Mongodb
+2. Backend
+cd backend
+docker build -t <dockerhub-username>/backend:v1 .
 
-## Dependencies
+3. Frontend
+cd frontend
+docker build -t <dockerhub-username>/frontend:v1 .
 
-Following are the major dependencies of the project:
+4. Docker Compose
 
-- axios
-- react
-- react-dom
-- react-redux
-- react-router-dom
-- react-toastify
-- redux
-- redux-thunk
-- bcrypt
-- cors
-- dotenv
-- express
-- jsonwebtoken
-- mongoose
+Run both containers together:
 
-## Dev-dependencies
+docker-compose up -d
 
-Following are the major dev-dependencies of the project:
+5. Azure VM Deployment
 
-- nodemon
-- concurrently
+Create a Linux VM on Azure
 
-## Prerequisites
+Install Docker:
 
-- Node.js must be installed on the system.
-- You should have a MongoDB database.
-- You should have a code editor (preferred: VS Code)
+sudo apt update
+sudo apt install docker.io -y
+sudo systemctl enable docker
+sudo systemctl start docker
 
-## Installation and Setup
+Pull images from Docker Hub and run:
 
-1. Install all the dependencies
+docker run -d -p 5000:5000 <dockerhub-username>/backend:v1
+docker run -d -p 80:80 <dockerhub-username>/frontend:v1
 
-   ```sh
-   npm run install-all
-   ```
+CI/CD with GitHub Actions
 
-2. Create a file named ".env" inside the backend folder. Add data from .env.example file and substitute your credentials there.
+Workflow located at: .github/workflows/deploy.yml
 
-3. Start the application
+Automatically triggered on push to main branch
 
-   ```sh
-   npm run dev
-   ```
+Steps include:
 
-4. Go to http://localhost:3000
+Build backend & frontend Docker images
 
-## Backend API
+Push images to Docker Hub
 
-<pre>
-- POST     /api/auth/signup
-- POST     /api/auth/login
-- GET      /api/tasks
-- GET      /api/tasks/:taskId
-- POST     /api/tasks
-- PUT      /api/tasks/:taskId
-- DELETE   /api/tasks/:taskId
-- GET      /api/profile
-</pre>
+SSH into Azure VM and deploy containers
 
-## Frontend pages
+GitHub Secrets used:
 
-<pre>
-- /                 Home Screen (Public home page for guests and private dashboard (tasks) for logged-in users)
-- /signup           Signup page
-- /login            Login page
-- /tasks/add        Add new task
-- /tasks/:taskId    Edit a task
-</pre>
+DOCKER_USERNAME
 
-## npm scripts
+DOCKER_PASSWORD
 
-At root:
+AZURE_HOST
 
-- `npm run dev`: Starts both backend and frontend
-- `npm run dev-server`: Starts only backend
-- `npm run dev-client`: Starts only frontend
-- `npm run install-all`: Installs all dependencies and dev-dependencies required at root, at frontend and at backend.
+AZURE_USER
 
-Inside frontend folder:
+AZURE_KEY
 
-- `npm start`: Starts frontend in development mode
-- `npm run build`: Builds the frontend for production to the build folder
-- `npm test`: Launches the test runner in the interactive watch mode
-- `npm run eject`: This will remove the single build dependency from the frontend.
+Usage
 
-Inside backend folder:
+Access the frontend: http://51.132.176.217/
 
-- `npm run dev`: Starts backend using nodemon.
-- `npm start`: Starts backend without nodemon.
+Access the backend API: http://51.132.176.217:5000/api/tasks
 
-## Useful Links
+Login and use your app through the frontend interface
 
-- This project
+Screenshots
 
-  - Github Repo: https://github.com/aayush301/MERN-task-manager
+Screenshots are in /screenshots folder
 
-- Official Docs
+Example:
 
-  - Reactjs docs: https://reactjs.org/docs/getting-started.html
-  - npmjs docs: https://docs.npmjs.com/
-  - Mongodb docs: https://docs.mongodb.com/manual/introduction/
-  - Github docs: https://docs.github.com/en/get-started/quickstart/hello-world
+frontend_running.png – Frontend live on browser
 
-- Youtube tutorials
+backend_running.png – Backend logs and API working
 
-  - Expressjs: https://youtu.be/L72fhGm1tfE
-  - React: https://youtu.be/EHTWMpD6S_0
-  - Redux: https://youtu.be/1oU_YGhT7ck
+ci_cd_success.png – Workflow completed successfully
 
-- Download links
+Challenges & Notes
 
-  - Nodejs download: https://nodejs.org/
-  - VS Code download: https://code.visualstudio.com/
+- MongoDB connection initially failed due to missing .env values (solved by adding correct MongoDB Atlas URI)
 
-- Cheatsheets
-  - Git cheatsheet: https://education.github.com/git-cheat-sheet-education.pdf
-  - VS Code keyboard shortcuts: https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf
-  - CSS Selectors Cheatsheet: https://frontend30.com/css-selectors-cheatsheet/
+- Backend container exited on invalid connection string; fixed by updating .env
 
-## Contact
+- Azure VM firewall blocked ports; solved by creating inbound port rules
 
-- Email: aayush5521186@gmail.com
-- Linkedin: https://www.linkedin.com/in/aayush12/
+- Docker Hub push required correct image tags
+
+
+
