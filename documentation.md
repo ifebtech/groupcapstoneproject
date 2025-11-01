@@ -41,7 +41,7 @@ Tools used:
  - .github/workflows/deploy.yml,
 - backend/.env
 
-tep 1: Creating Dockerfiles for Backend and Frontend
+Step 1: Creating Dockerfiles for Backend and Frontend
 🎯 Objective
 
 To containerize both the backend (Node.js + Express) and frontend (React) applications by writing separate Dockerfiles. This ensures that each service runs in its own isolated environment, making deployment consistent and independent of local setup.
@@ -125,7 +125,7 @@ Command to Build Frontend Image:
 `docker build -t yourdockerhubusername/frontend:v1 .`
 
 Output:
-![frontend Docker image built successfully](./screenshots/04_backend_docker_build_success.png)
+![frontend Docker image built successfully](./screenshots/04_frontend_docker_build_success.png)
                *CLI showing frontend Docker image built successfully*
 
 
