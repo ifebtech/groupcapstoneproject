@@ -1,6 +1,6 @@
 # Final Project Documentation Summary
 
-Objective:
+**Objective:**
 The objective of this project is to design, build, and deploy a two-tier web application consisting of a backend API and a frontend client, both containerized with Docker. The project integrates a continuous integration and continuous deployment (CI/CD) pipeline using GitHub Actions, and the final deployment is hosted on a Linux Virtual Machine (VM) on Microsoft Azure.
 
 **Executive summary**
@@ -27,7 +27,7 @@ Built a two-tier MERN app, containerized frontend + backend with Docker, orchest
 
 **Preliminaries**
 
-Tools used:
+**Tools used:**
 - VS Code, 
 - Docker Desktop,
 - Git, GitHub, 
@@ -42,13 +42,15 @@ Tools used:
 - backend/.env
 
 ## Step 1: Creating Dockerfiles for Backend and Frontend
-🎯 Objective
+
+**🎯 Objective**
 
 To containerize both the backend (Node.js + Express) and frontend (React) applications by writing separate Dockerfiles. This ensures that each service runs in its own isolated environment, making deployment consistent and independent of local setup.
 
 **A. Backend Dockerization**
 
-Objective:
+**Objective:**
+
 Create a Docker image for the Node.js + Express backend server.
 
 Dockerfile (backend/Dockerfile):
@@ -74,11 +76,11 @@ EXPOSE 5000
 CMD ["npm", "start"]
 ```
 
-Command to Build Backend Image:
+**Command to Build Backend Image:**
 
 `docker build -t yourdockerhubusername/backend:v1 .`
 
-Output:
+**Output:**
 
  ![backend Docker image built successfully](./screenshots/02_backend_docker_build_success.png)
          *CLI showing backend Docker image built successfully*
@@ -86,7 +88,7 @@ Output:
 
 **B. Frontend Dockerization**
 
-Objective:
+**Objective:**
 
 Create a Docker image for React frontend using an optimized multi-stage build.
 
@@ -113,22 +115,22 @@ CMD ["nginx", "-g", "daemon off;"]
 
 **Explanation:**
 
-Uses multi-stage build to optimize final image size.
+- Uses multi-stage build to optimize final image size.
 
-First stage builds React app using Node.js.
+- First stage builds React app using Node.js.
 
-Second stage uses Nginx to serve static files for production.
+- Second stage uses Nginx to serve static files for production.
 
-EXPOSE 80 → ensures the container listens on HTTP port.
+- EXPOSE 80 → ensures the container listens on HTTP port.
 
-The CMD command runs Nginx in the foreground.
+- The CMD command runs Nginx in the foreground.
 
 
-Command to Build Frontend Image:
+**Command to Build Frontend Image:**
 
 `docker build -t yourdockerhubusername/frontend:v1 .`
 
-Output:
+**Output:**
 
 ![frontend Docker image built successfully](./screenshots/04_frontend_docker_build_success.png)
                *CLI showing frontend Docker image built successfully*
@@ -140,7 +142,7 @@ To list built images use:
 
  `docker images`
 
-Output:
+**Output:**
 
 ![list of image built successfully](./screenshots/05_docker_images_with_frontend.png)
         *CLI showing list of Docker images built successfully*
@@ -152,11 +154,11 @@ Both frontend and backend images built successfully and visible in local Docker 
 
 **STEP 2: Orchestrating Containers with Docker Compose**
 
-Objective:
+**Objective:**
 
 Run both containers together locally to test integration before deployment.
 
-File: docker-compose.yml
+File: `docker-compose.yml`
 
 (placed in project root, same level as /backend and /frontend)
   `docker-compose.yml .`
@@ -166,7 +168,7 @@ File: docker-compose.yml
                 
 Run Both Containers Together
 
-Command:
+**Command:**
 
 From your project root, run:
 
@@ -174,14 +176,14 @@ From your project root, run:
 
 This will:
 
-Build and start both containers.
+- Build and start both containers.
 
-Display logs from both backend and frontend.
+- Display logs from both backend and frontend.
 
-Make your app accessible via browser at:
+- Make your app accessible via browser at:
 👉 http://localhost
 
-Output:
+**Output:**
 ![localhost running on port3000.](./screenshots/localhost.running.on.port3000.png)
                 *Browser view showing localhost running successfully*
 
@@ -196,12 +198,13 @@ When the command below was ran, i got an error message:
 
 `docker-compose up -d`
 
-output appeared:
+**Output appeared:**
+
 `env file C:\Users\USER\dockerized-2tier-app-demo\backend\.env not found: CreateFile C:\Users\USER\dockerized-2tier-app-demo\backend\.env: The system cannot find the file specified.`
 
 “env file not found: backend/.env”
 
-###MongoDB Atlas Setup and Integration
+### MongoDB Atlas Setup and Integration
 
 **Why MongoDB Atlas Was Needed**
 
@@ -214,11 +217,9 @@ Without a valid MongoDB connection string, the backend couldn’t connect to a d
 
 Hence, it became necessary to:
 
-Create a MongoDB Atlas database, and
+Create a MongoDB Atlas database, and Configure the .env file to point to it.
 
-Configure the .env file to point to it.
-
-Step 1: Create MongoDB Atlas Account
+**1: Create MongoDB Atlas Account**
 
 - Navigate to https://www.mongodb.com/cloud/atlas
 
@@ -226,11 +227,12 @@ Step 1: Create MongoDB Atlas Account
 
 - Once logged in, click “Build a Database” → Choose Free (M0) cluster.
 
-     Screenshot:
+     **Screenshot:**
+     
      ![Creating free cluster in MongoDB Atlas ](./screenshots/mongodb_cluster.created.png)
      *Creating free cluster in MongoDB Atlas*
 
-**Step 2: Configure Your Cluster**
+**2: Configure Your Cluster**
 
 - Choose a cloud provider (e.g., AZURE) and a region close to you.
 
@@ -240,7 +242,7 @@ Step 1: Create MongoDB Atlas Account
   ![Creating free cluster in MongoDB Atlas ](./screenshots/mongodb_create_cluster.png)
   *Cluster created successfully in MongoDB Atlas*
 
-**Step 3: Add Database User**
+**3: Add Database User**
 
 In the left sidebar, go to Database Access → Add New Database User.
 
@@ -256,7 +258,7 @@ In the left sidebar, go to Database Access → Add New Database User.
 
 - Click Add User.
 
-**Step 4: Allow IP Access**
+**4: Allow IP Access**
 
 - Go to Network Access → Add IP Address.
 
@@ -264,7 +266,7 @@ In the left sidebar, go to Database Access → Add New Database User.
 
 - Save changes.
 
-**Step 5: Get the Connection String**
+**5: Get the Connection String**
 
 - Go back to your Cluster Dashboard.
 
@@ -274,17 +276,17 @@ In the left sidebar, go to Database Access → Add New Database User.
   
     mongodb+srv://<username>:<password>@cluster0.mongodb.net/?appName=appproject
 
- ![mongodb conection string](image.png)   
+ ![mongodb conection string](./screenshots/mongodb_connection_string.png)   
 *Connection string copied from Atlas* 
 
 
 - Replace <username> and <password> with your actual credentials.
 
-✅ Final connection string used:
+**✅ Final connection string used:**
 
    `mongodb+srv://admin:admin123@appproject.fc9xifh.mongodb.net/?appName=appproject`
 
-**Step 6: Create the .env File**
+**6: Create the .env File**
 
 Inside your backend folder (/backend), create a new .env file and add:   
  `PORT=5000`
@@ -294,7 +296,7 @@ Inside your backend folder (/backend), create a new .env file and add:
 *".env file created with MongoDB credentials”*
 
 
-**Step 7: Re-run Docker Compose**
+**7: Re-run Docker Compose**
 
 Now that .env exists, re-run your containers:
  `docker-compose up -d --build`
@@ -315,8 +317,9 @@ Now that .env exists, re-run your containers:
 
 - Containers now communicate correctly — backend ↔ MongoDB ↔ frontend.
 
-Step 7.1: Frontend Customization
-🎯 Objective
+## Step 3: Frontend Customization**
+
+**🎯 Objective**
 
 To personalize the frontend UI of the application to improve user experience and presentation before deployment.
 
@@ -342,20 +345,25 @@ These customizations aligned the UI design with the project’s visual theme and
 
 - Browser DevTools — to test and preview UI changes live
 
- Screenshots
+**Screenshots**
 
 Before Customization: Default React UI on http://localhost
+
 ![localhost running on port3000.](./screenshots/localhost.running.on.port3000.png)
 
-After Customization: Updated design (colors, layout, branding)
+After Customization:
+
+ Updated design (colors, layout, branding)
+
 ![Customized frontend UI](./screenshots/09_frontend_customized_interface1.png)
 
-✅ Outcome
+**✅ Outcome**
 
 The customized frontend maintained full integration with the backend API while presenting a more professional and modern interface — suitable for demonstration, testing, and deployment.
 
-Step 7.2: Pushing Docker Images to Docker Hub
-🎯 Objective
+## Step 4: Pushing Docker Images to Docker Hub
+
+**🎯 Objective**
 
 To publish both the backend and frontend Docker images to Docker Hub, making them accessible for deployment to any remote environment (such as Azure VM or any CI/CD pipeline).
 
@@ -366,27 +374,29 @@ After successfully building your Docker images locally using docker build and ve
 Docker Hub is a cloud-based registry that allows developers to store and distribute Docker images publicly or privately.
 This makes it easier for others (or yourself on another machine) to pull and run the same images without rebuilding them.
 
-Step 1. **Log in to Docker Hub.**
+1. **Log in to Docker Hub.**
+
 Before pushing images, log in to your Docker Hub account from the terminal:
 
 `docker login`
 
 You’ll be prompted for your Docker Hub username and password (or access token if 2FA is enabled).
 
-✅ Expected Output:
+**✅ Expected Output:**
 
-  Login Succeeded
+*Login Succeeded*
 
 ![Docker hub successful login](./screenshots/11_dockerhub_login_success.png)
 *Terminal after a successful Docker Hub login.*
 
-**Step 2 — Tag Your Images Properly**
+**2 — Tag Your Images Properly**
 
 Now, tag your locally built images with your Docker Hub username.
 
-Replace *yourdockerhubusername* with your actual Docker Hub username.
+Replace `*yourdockerhubusername*` with your actual Docker Hub username.
 
 Run the following commands:
+
 `docker push ifeanyi222/backend:v1`
 `docker push ifeanyi222/frontend:v1`
 
@@ -398,11 +408,12 @@ Run the following commands:
 
 *Pushing both backend and frontend Docker images to Docker Hub successfully*
 
-**Step 4 — Verify Images on Docker Hub**
+**3 — Verify Images on Docker Hub**
 
 Once the push completes successfully:
 
 Visit your Docker Hub account.
+
 Click on Repositories.
 
 You should now see both repositories:
@@ -424,23 +435,24 @@ You should now see both repositories:
 | Network timeout            | The push was interrupted due to unstable internet.                                  | Waited for stable connection and reran the `docker push` commands successfully. |
 ```
 
-✅ Final Result
+**✅ Final Result**
 
 Both backend and frontend images are now hosted on Docker Hub, making them accessible from any machine via:
 `docker pull ifeanyi222/backend:v1`
+
 `docker pull ifeanyi222/frontend:v1`
 
 This means your application images are portable and ready for deployment to remote servers or CI/CD pipelines.
 
-**Step 7.3: Environment Variables (.env) Management**
+## Step 5: Environment Variables (.env) Management
 
-🎯 Objective:
+**🎯 Objective:**
 
 Ensure all sensitive configurations (like MongoDB credentials and JWT secrets) are securely managed using environment variables across local, Docker, and CI/CD environments.
 
-Overview
+**Overview**
 
-The .env file contains key configuration values that the backend service depends on, such as:
+The `.env` file contains key configuration values that the backend service depends on, such as:
 
 `PORT=5000`  
 `MONGODB_URL=mongodb+srv://admin:admin123@appproject.fc9xifh.mongodb.net/?appName=appproject  `
@@ -449,6 +461,7 @@ The .env file contains key configuration values that the backend service depends
 **Usage in Docker Compose**
 
 In the docker-compose.yml, the backend service automatically loads environment variables from this .env file:
+
 ```bash
 backend:
   build: ./backend
@@ -469,7 +482,7 @@ env:
   `MONGODB_URL: ${{ secrets.MONGODB_URL }}`
   `ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}`
 
- ✅ Result:
+**✅ Result:**
 
 Local development uses `.env.`
 
@@ -480,7 +493,7 @@ GitHub Actions securely provides the same variables at runtime via secrets.
 This approach keeps credentials secure, portable, and consistent across all environments — local, containerized, and deployed. 
 
 
-**Step 8: Deploying Containers Using Docker Compose (Production Setup Simulation)**
+## 6: Deploying Containers Using Docker Compose (Production Setup Simulation)
 
 **Objective:**
 
@@ -488,7 +501,7 @@ Deploy the backend and frontend containers to your Azure Linux VM, making the ap
 
 **Azure VM Setup** 
 
-1.Login to Azure CLI:
+**1.Login to Azure CLI:**
 
 Run the following command in your terminal:
    
@@ -497,7 +510,7 @@ Run the following command in your terminal:
  ![Succesfully logged into azure using cli](./screenshots/15_azure_login_success.png) 
 *Succesfully logged into azure using cli*
 
-2.Create a Resource Group:
+**2.Create a Resource Group:**
 
 A resource group logically organizes your Azure resources (VM, disks, network, etc.).
 
@@ -511,14 +524,15 @@ Run:
 ![Succesfully created a resources group using cli](./screenshots/16b_resource_group_portal.png) 
 *Portal view of the created resource group*
 
-3.Create a Linux VM:
+**3.Create a Linux VM:**
 
 Next, create your Ubuntu VM.
+
 This command automatically sets up a network, public IP, and SSH keys.
 
 `az vm create --resource-group dockerGroup4RG --name dockerGroup4VM --image UbuntuLTS --admin-username azureuser --generate-ssh-keys`
 
-✅ Expected Output:
+**✅ Expected Output:**
 
 A public IP address is generated (e.g. 51.132.176.217)
 
@@ -534,31 +548,32 @@ The VM is now active and ready for SSH access.
 *Portal view of the vm created*
 
 
-4. Open Required Ports (via Azure Portal)
+**4. Open Required Ports (via Azure Portal)**
 
 To make your web application publicly accessible, you must allow HTTP (port 80) and backend API (port 5000) traffic on the Virtual Machine.
 
 Since the VM’s default firewall only allows SSH (port 22), the additional ports were opened manually using the Azure Portal instead of CLI.
 
-Steps followed:
+**Steps followed:**
 
-Log in to Azure Portal
+- Log in to Azure Portal
 
-Go to Resource Groups → your-resource-group → your-VM.
+- Go to Resource Groups → your-resource-group → your-VM.
 
-Under the Settings section, click Networking.
+- Under the Settings section, click Networking.
 
-In the Inbound port rules tab, click Add inbound port rule.
+- In the Inbound port rules tab, click Add inbound port rule.
 
 Add two rules:
 
-Port 80 → Protocol: TCP → Allow → Name: frontend-http
+- Port 80 → Protocol: TCP → Allow → Name: frontend-http
 
-Port 5000 → Protocol: TCP → Allow → Name: backend-api
+- Port 5000 → Protocol: TCP → Allow → Name: backend-api
 
 Save the changes.
 
-✅ Outcome:
+**✅ Outcome:**
+
 Both ports (80 and 5000) are now open, allowing frontend and backend access through the VM’s public IP.
 
 ![Portal view of the port setting](./screenshots/portal_ports_opened.png) 
@@ -566,22 +581,24 @@ Both ports (80 and 5000) are now open, allowing frontend and backend access thro
 
 **Challenges Faced & Solutions Implemented**
 
-Challenge:
+**Challenge:**
 
 Port Access Restrictions
+
 Frontend (port 80) and backend (port 5000) were inaccessible from the browser.
 
-Solution implemented:
+**Solution implemented:**
+
 Opened the required inbound ports manually via Azure Portal → Networking → Add inbound port rule.
 
 
-**Step 5: Connecting to Azure VM via SSH**
+## Step 7: Connecting to Azure VM via SSH
 
-🎯 Objective:
+**🎯 Objective:**
 
 Securely access the Azure Virtual Machine (VM) to install and configure Docker for application deployment.
 
-Command Used:
+**Command Used:**
 
 `ssh azureuser@<VM_Public_IP>`
 
@@ -589,12 +606,13 @@ Replace <VM_Public_IP> with your actual VM public IP address (e.g., 51.132.176.2
 
 ![Portal view of the port setting](./screenshots/18_ssh_connection_vm.png) 
 
-✅ Successful SSH Connection:
+**✅ Successful SSH Connection:**
+
 You are now inside the remote VM environment and can begin configuring it for Docker-based deployment.
 
-**Step 6: Installing Docker on the Azure VM**
+## Step 8: Installing Docker on the Azure VM
 
-🎯 Objective:
+**🎯 Objective:**
 
 Set up Docker on the Azure VM to enable containerized deployment of both backend and frontend applications.
 
@@ -616,21 +634,22 @@ Set up Docker on the Azure VM to enable containerized deployment of both backend
 
 `docker --version`
 
-Expected Output
+**Expected Output**
 
 `Docker version 24.x.x, build xxxxxxx`
 
-Screenshot:
+**Screenshot:**
 
 ![Docker was successfully installed and verified on the VM.](./screenshots/19_install_docker_vm.png) 
 *Docker successfully installed and verified on the VM.*
 
-**Step 7: Pulling and Running Project Images from Docker Hub**
+## Step 9: Pulling and Running Project Images from Docker Hub
 
-🎯 Objective:
+**🎯 Objective:**
+
 Retrieve the pre-built backend and frontend images from Docker Hub and run them on the Azure VM.
 
-Procedure:
+**Procedure:**
 
 1️⃣ Log in to Docker Hub:
 
@@ -638,39 +657,40 @@ Procedure:
 
 *Enter your Docker Hub username and password/access token when prompted.*
 
-Expected Output:
+**Expected Output:**
 
 *Login Succeeded*
 
 ![Docker logged in successfuly.](./screenshots/21_dockerhub_login_vm.png) 
 
 
-2️⃣ Pull your project images:
+**2️⃣ Pull your project images:**
 
 `sudo docker pull <yourdockerhubusername>/backend:v1`
 `sudo docker pull <yourdockerhubusername>/frontend:v1`
 
-3️⃣ Verify that the images were downloaded successfully:
+**3️⃣ Verify that the images were downloaded successfully:**
 
 `sudo docker images`
 
-Expected Output Example:
+**Expected Output Example:**
 ```
 REPOSITORY                        TAG       IMAGE ID       SIZE
 yourdockerhubusername/frontend     v1        5cfae6a8a4b5   157MB
 yourdockerhubusername/backend      v1        34a4fef0e8b9   230MB
 ```
 
-4️⃣ Run the containers:
+**4️⃣ Run the containers:**
 
 `sudo docker run -d -p 5000:5000 --name backend_container yourdockerhubusername/backend:v1`
 `sudo docker run -d -p 80:80 --name frontend_container yourdockerhubusername/frontend:v1`
 
-5️⃣ Confirm running containers:
+**5️⃣ Confirm running containers:**
 
 `sudo docker ps`
 
-Expected Output:
+**Expected Output:**
+
 ```bash
 CONTAINER ID   IMAGE                               COMMAND                  STATUS         PORTS
 b9f0a4d7c1a1   yourdockerhubusername/frontend:v1   "/docker-entrypoint.…"   Up 2 minutes   0.0.0.0:80->80/tcp
@@ -679,14 +699,18 @@ a2d67cf44e3b   yourdockerhubusername/backend:v1    "docker-entrypoint.s…"   Up
 ![Docker containers running succesfully.](./screenshots/23_docker_containers_running.png) 
 *Docker containers running succesfully on Vm*
 
-✅ Deployment Successful:
+**✅ Deployment Successful:**
+
 The containers are running on the VM.
+
 The application can be accessed at:
 
 Frontend (React app):
+
 http://<VM_Public_IP>/
 
 Backend (API):
+
 http://<VM_Public_IP>:5000/
 
 **Challenges Faced & Solutions Implemented**
@@ -695,23 +719,24 @@ http://<VM_Public_IP>:5000/
 
 SSH connection timeout
 
-Solution Implemented:
+**Solution Implemented:**
 
 Verified correct VM public IP from Azure portal and ensured ports in the Network Security Group are all okay and opened (NSG).
 
-Challenge:
+**Challenge:**
 
 Docker installation failed
 
-Solution Implemented:
+**Solution Implemented:**
 
 Ran `sudo apt update && sudo apt upgrade -y` before installing Docker.
 
-✅ Summary:
+**✅ Summary:**
+
 All SSH and Docker-related setup challenges were successfully resolved, ensuring a stable environment for container deployment on the Azure VM.
 
 
-## Step 8: Deploying Containers Using Docker Compose on Azure VM
+## Step 10: Deploying Containers Using Docker Compose on Azure VM
 
 **🎯 Objective**
 
@@ -724,7 +749,7 @@ This simplifies production deployment and allows for easier container lifecycle 
 
 **Procedure**
 
-1️⃣ Create a new docker-compose.yml file on the Azure VM
+**1️⃣ Create a new docker-compose.yml file on the Azure VM**
 
 After connecting to the VM via SSH, create a new Docker Compose file:
 
@@ -769,7 +794,7 @@ Instead, the Compose file here pulls prebuilt images using:
 `image: ifeanyi222/backend:v1`
 `image: ifeanyi222/frontend:v1`
 
-✅ Summary of Difference:
+**✅ Summary of Difference:**
 ```
 | Environment       | Compose Behavior                                     | Purpose                                  |
 | ----------------- | ---------------------------------------------------- | ---------------------------------------- |
@@ -777,33 +802,34 @@ Instead, the Compose file here pulls prebuilt images using:
 | **Azure VM**      | Pulls prebuilt images from Docker Hub using `image:` | For deployment and production simulation |
 ```
 
-3️⃣ Start Docker Compose
+**3️⃣ Start Docker Compose**
 
 Run the following command to pull and start the containers together:
 
 `sudo docker-compose up -d`
 
-✅ Expected Output:
+**✅ Expected Output:**
 
 Docker Compose automatically pulls both images from Docker Hub (if not already present) and starts the containers in detached mode.
 
 ![successfully pulled images](./screenshots/22_pull_images_vm.png) 
 
-4️⃣ Verify Running Containers
+**4️⃣ Verify Running Containers**
 
 To confirm both containers are running:
 
 `sudo docker ps`
 
-✅ Expected Output:
+**✅ Expected Output:**
 
 CONTAINER ID   IMAGE                           COMMAND                  STATUS         PORTS
+
 `a2d67cf44e3b   ifeanyi222/backend:v1           "docker-entrypoint.s…"   Up 2 minutes   0.0.0.0:5000->5000/tcp`
 `b9f0a4d7c1a1   ifeanyi222/frontend:v1          "/docker-entrypoint.…"   Up 2 minutes   0.0.0.0:80->80/tcp`
 
 ![containers running on vm](./screenshots/container_running_on_vm.png) 
 
-5️⃣ Test Application in Browser
+**5️⃣ Test Application in Browser**
 
 Frontend (React App):
 
@@ -825,23 +851,23 @@ Backend (API):
 
 **Challenges Faced & Solutions Implemented (Docker Compose on VM)**
 
-```
-Challenge
+
+**Challenge**
 
 The backend container failed to start initially because the .env file was not found in the VM environment.
 
-Solution Implemented
+**Solution Implemented**
 
 Recreated the .env file inside /backend directory on the VM with correct MongoDB credentials.
 
-Challenge
+**Challenge**
 
 Pulling large images from Docker Hub was slow due to network latency.
 
-Solution Implemented
+**Solution Implemented**
 
 Waited for completion and verified using sudo docker images before proceeding.
-```
+
 
 **✅ Outcome:**
 
@@ -850,13 +876,13 @@ Both frontend and backend containers deployed successfully using Docker Compose.
 The app is live and accessible at http://51.132.176.217
 
 
-## Step 9: Setting Up GitHub Actions for CI/CD (Automated Deployment to Azure VM)
+## Step 11: Setting Up GitHub Actions for CI/CD (Automated Deployment to Azure VM)
 
 **🎯 Objective:**
 
 To automate the process of building, testing, and deploying both frontend and backend Docker containers from GitHub to Docker Hub, and then deploying them automatically on the Azure Virtual Machine.
 
-1️⃣ Create the GitHub Actions Workflow File
+**1️⃣ Create the GitHub Actions Workflow File**
 
 In your project directory, create the following folder structure (if not already existing):
 
@@ -875,7 +901,7 @@ To avoid exposing credentials directly inside your workflow file, store all sens
 
 Go to your project repository on GitHub →Settings → Secrets and Variables → Actions → New Repository Secret.
 
-2️⃣ Add GitHub Secrets
+**2️⃣ Add GitHub Secrets**
 
 To avoid exposing credentials directly inside your workflow file, store all sensitive values in GitHub Secrets.
 
@@ -927,6 +953,7 @@ Backend API → http://51.132.176.217:5000
 
 ✅ The app auto-updates each time you push new commits to GitHub.
 
+
 ### Challenges Faced & Solutions Implemented (CI/CD Phase)
 
 **Challenge:**
@@ -950,7 +977,11 @@ Optimized Dockerfiles and used caching to reduce image size.
 
 ![Secrets Added ](./screenshots/github_actions_pipeline_success.png) 
 
-✅ Final Outcome:
+![ci-cd workflow success ](./screenshots/workflows_on_github.png) 
+
+
+
+**✅ Final Outcome:**
 
 - Full CI/CD pipeline successfully implemented.
 
@@ -959,6 +990,135 @@ Optimized Dockerfiles and used caching to reduce image size.
 - Zero manual intervention needed for deployment.
 
 - Application remains live at http://51.132.176.217
+
+
+## Step 12: Triggering CI/CD Redeployment & Final Validation
+
+**🎯 Objective:**
+
+Automatically deploy the latest Docker images from GitHub to the Azure VM using the CI/CD pipeline (GitHub Actions).
+
+This step ensures that every new push to the main branch triggers an automated build → push → deploy sequence, eliminating manual redeployment.
+
+**1️⃣ CI/CD Pipeline Trigger**
+
+Once the .github/workflows/deploy.yml file was configured and GitHub Secrets were securely added (Docker_username, Docker_password, Vm_Host, Vm_User, Vm_ssh_key), a new commit was pushed to the main branch, triggering the pipeline automatically.
+
+Alternatively, the workflow can also be triggered manually from:
+
+GitHub → Actions → Select “Deploy Workflow” → Run Workflow
+
+**✅ Expected CI/CD Flow:**
+
+- Build backend and frontend Docker images.
+
+- Push both images to Docker Hub.
+
+- Connect to the Azure VM via SSH.
+
+- Pull the latest images.
+
+- Restart the containers using Docker Compose.
+
+**2️⃣ Verification on Azure VM**
+
+After the workflow completed successfully, an SSH connection was made to the Azure VM to confirm deployment status:
+
+`ssh azureuser@<VM_Public_IP>`
+`docker ps`
+
+**✅ Expected Output:**
+
+`CONTAINER ID   IMAGE                         STATUS         PORTS`
+`a1b2c3d4e5f6   ifeanyi222/backend:v1         Up 2 minutes   0.0.0.0:5000->5000/tcp`
+`b2c3d4e5f6g7   ifeanyi222/frontend:v1        Up 2 minutes   0.0.0.0:80->80/tcp`
+
+**✅ Application Access:**
+
+Frontend (React App): http://51.132.176.217
+
+Backend (API): http://51.132.176.217:5000
+
+The application was fully deployed, accessible via browser, and serving live API data from MongoDB Atlas.
+
+**3️⃣ Challenges Faced & Solutions Implemented (CI/CD Phase)**
+
+**Challenge:**
+
+VM returned “docker-compose: command not found” during workflow execution.
+
+**Solution Implemented:**
+
+Installed Docker Compose manually on VM using `sudo apt install docker-compose -y.`
+
+**Challenge:**
+
+Error: "Cannot link to a non running container"
+
+**Solution Implemented:**
+
+Added sleep 10 delay between backend and frontend container startup to allow backend initialization
+
+**Final Outcome**
+
+✅ Frontend and backend services successfully deployed and running on Azure VM.
+✅ Automated pipeline functioning — updates from GitHub trigger full redeployment.
+✅ MongoDB Atlas integration stable and connected to the backend API.
+✅ Docker Hub hosting verified — images available publicly.
+✅ Azure VM firewall configured — ports 22, 80, and 5000 open for SSH, HTTP, and API access.
+
+**Final Project Conclusion**
+
+This project demonstrates the complete lifecycle of a modern DevOps deployment from development to continuous delivery , using industry-standard cloud and containerization tools.
+
+**Key Achievements:**
+
+- Built a two-tier MERN web application (frontend + backend).
+
+- Containerized both services using Docker.
+
+- Integrated MongoDB Atlas for persistent cloud storage.
+
+- Orchestrated services with Docker Compose for unified management.
+
+- Published images to Docker Hub for portability.
+
+- Deployed to Azure Linux VM for real-world hosting.
+
+- Automated deployment via GitHub Actions CI/CD pipeline.
+
+- Documented and resolved real-time errors encountered during setup and deployment.
+
+**✅ Final Result:**
+
+LIVE APPLICATION URL: http://51.132.176.217
+
+REPOSITORY: https://github.com/ifebtech/groupcapstoneproject
+
+STATUS: ✅ Fully Deployed, Tested, and Operational
+
+**Lessons Learned**
+
+Throughout the development and deployment of this two-tier Dockerized web application, several key lessons were learned that strengthened both technical and operational understanding:
+
+Containerization Simplifies Deployment
+Docker made it possible to package all dependencies and configurations into isolated containers, ensuring consistent behavior across local, test, and production environments.
+
+Environment Variables Are Essential for Security
+Using a .env file and GitHub Secrets emphasized the importance of never hardcoding sensitive data like database credentials or API keys directly into source code.
+
+CI/CD Pipelines Save Time and Reduce Errors
+Automating builds and deployments with GitHub Actions removed repetitive manual tasks, ensuring fast and reliable releases with every commit.
+
+Cloud Integration Requires Network Awareness
+Opening ports, managing firewalls, and configuring public IPs on Azure highlighted the importance of understanding cloud networking for successful deployments.
+
+Troubleshooting Builds Problem-Solving Skills
+Encountering errors (e.g., missing .env, tag mismatches, and SSH key issues) provided hands-on experience in debugging real-world DevOps challenges.
+
+Documentation Is as Important as Implementation
+Systematically recording each step, command, and challenge ensured transparency, reproducibility, and ease of collaboration within the team.
+
 
 
 
