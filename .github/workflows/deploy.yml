@@ -47,5 +47,12 @@ jobs:
             docker rm backend_container || true
             docker stop frontend_container || true
             docker rm frontend_container || true
-            docker run -d --name backend_container -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/backend:v1
-            docker run -d --name frontend_container -p 80:80 ${{ secrets.DOCKER_USERNAME }}/frontend:v1
+            docker run -d --name backend_container \
+              -e MONGODB_URL="${{ secrets.MONGODB_URL }}" \
+              -e ACCESS_TOKEN_SECRET="${{ secrets.ACCESS_TOKEN_SECRET }}" \
+              ${{ secrets.DOCKER_USERNAME }}/backend:v1
+            sleep 10
+            docker run -d --name frontend_container \
+              --link backend_container \
+              -p 80:80 \
+              ${{ secrets.DOCKER_USERNAME }}/frontend:v1
