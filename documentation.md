@@ -13,7 +13,7 @@ Built a two-tier MERN app, containerized frontend + backend with Docker, orchest
 **GitHub Repository:** https://github.com/ifebtech/groupcapstoneproject  
 **Status:** ✅ COMPLETE & DEPLOYED  
 
-###Key Goals:
+### Key Goals:
 
 - Containerize both frontend and backend services with separate Dockerfiles.
 
@@ -41,12 +41,12 @@ Tools used:
  - .github/workflows/deploy.yml,
 - backend/.env
 
-Step 1: Creating Dockerfiles for Backend and Frontend
+## Step 1: Creating Dockerfiles for Backend and Frontend
 🎯 Objective
 
 To containerize both the backend (Node.js + Express) and frontend (React) applications by writing separate Dockerfiles. This ensures that each service runs in its own isolated environment, making deployment consistent and independent of local setup.
 
-A. Backend Dockerization
+**A. Backend Dockerization**
 
 Objective:
 Create a Docker image for the Node.js + Express backend server.
@@ -75,19 +75,23 @@ CMD ["npm", "start"]
 ```
 
 Command to Build Backend Image:
+
 `docker build -t yourdockerhubusername/backend:v1 .`
 
 Output:
+
  ![backend Docker image built successfully](./screenshots/02_backend_docker_build_success.png)
          *CLI showing backend Docker image built successfully*
 
 
-B. Frontend Dockerization
+**B. Frontend Dockerization**
 
 Objective:
+
 Create a Docker image for React frontend using an optimized multi-stage build.
 
 Dockerfile (frontend/Dockerfile):
+
 ```bash
 # Stage 1: Build the React app
 FROM node:18-alpine AS build
@@ -125,30 +129,37 @@ Command to Build Frontend Image:
 `docker build -t yourdockerhubusername/frontend:v1 .`
 
 Output:
+
 ![frontend Docker image built successfully](./screenshots/04_frontend_docker_build_success.png)
                *CLI showing frontend Docker image built successfully*
 
 
 **Confirm Built Images:**
+
 To list built images use:
+
  `docker images`
 
 Output:
+
 ![list of image built successfully](./screenshots/05_docker_images_with_frontend.png)
         *CLI showing list of Docker images built successfully*
 
 
  ✅ Result:
+
 Both frontend and backend images built successfully and visible in local Docker registry.
 
 **STEP 2: Orchestrating Containers with Docker Compose**
 
 Objective:
+
 Run both containers together locally to test integration before deployment.
 
 File: docker-compose.yml
+
 (placed in project root, same level as /backend and /frontend)
-  docker-compose.yml .
+  `docker-compose.yml .`
 
 ![Docker compose file](./screenshots/docker-compose.yml.file.PNG)
  *Docker compose file*
@@ -680,7 +691,7 @@ http://<VM_Public_IP>:5000/
 
 **Challenges Faced & Solutions Implemented**
 
-Challenge:
+**Challenge:**
 
 SSH connection timeout
 
@@ -700,11 +711,254 @@ Ran `sudo apt update && sudo apt upgrade -y` before installing Docker.
 All SSH and Docker-related setup challenges were successfully resolved, ensuring a stable environment for container deployment on the Azure VM.
 
 
+## Step 8: Deploying Containers Using Docker Compose on Azure VM
+
+**🎯 Objective**
+
+To deploy both the backend and frontend containers together on the Azure Virtual Machine using Docker Compose, ensuring the entire two-tier application runs as a unified production setup accessible via the VM’s public IP address.
+
+**Overview**
+
+After verifying that individual containers can run successfully using docker run, Docker Compose is now used to manage both services in one configuration file.
+This simplifies production deployment and allows for easier container lifecycle management (start, stop, rebuild, etc.) on the VM.
+
+**Procedure**
+
+1️⃣ Create a new docker-compose.yml file on the Azure VM
+
+After connecting to the VM via SSH, create a new Docker Compose file:
+
+Paste the following content inside:
+
+```bash
+version: "3.8"
+services:
+  backend:
+    image: ifeanyi222/backend:v1
+    container_name: backend_container
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    restart: always
+
+  frontend:
+    image: ifeanyi222/frontend:v1
+    container_name: frontend_container
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
+```
+
+Press CTRL + O, then ENTER, and CTRL + X to save and exit the editor.
+
+2️⃣ **Explanation: Why Create a New Compose File?**
+
+In your local environment, the Docker Compose file included build instructions like:
+
+`build: ./backend`
+`build: ./frontend`
+
+That meant images were being built directly from source code on your machine.
+
+However, in a production VM environment, the images are already built and stored on Docker Hub, so there’s no need to rebuild them.
+Instead, the Compose file here pulls prebuilt images using:
+
+`image: ifeanyi222/backend:v1`
+`image: ifeanyi222/frontend:v1`
+
+✅ Summary of Difference:
+```
+| Environment       | Compose Behavior                                     | Purpose                                  |
+| ----------------- | ---------------------------------------------------- | ---------------------------------------- |
+| **Local Machine** | Builds containers from source using `build:`         | For development and testing              |
+| **Azure VM**      | Pulls prebuilt images from Docker Hub using `image:` | For deployment and production simulation |
+```
+
+3️⃣ Start Docker Compose
+
+Run the following command to pull and start the containers together:
+
+`sudo docker-compose up -d`
+
+✅ Expected Output:
+
+Docker Compose automatically pulls both images from Docker Hub (if not already present) and starts the containers in detached mode.
+
+![successfully pulled images](./screenshots/22_pull_images_vm.png) 
+
+4️⃣ Verify Running Containers
+
+To confirm both containers are running:
+
+`sudo docker ps`
+
+✅ Expected Output:
+
+CONTAINER ID   IMAGE                           COMMAND                  STATUS         PORTS
+`a2d67cf44e3b   ifeanyi222/backend:v1           "docker-entrypoint.s…"   Up 2 minutes   0.0.0.0:5000->5000/tcp`
+`b9f0a4d7c1a1   ifeanyi222/frontend:v1          "/docker-entrypoint.…"   Up 2 minutes   0.0.0.0:80->80/tcp`
+
+![containers running on vm](./screenshots/container_running_on_vm.png) 
+
+5️⃣ Test Application in Browser
+
+Frontend (React App):
+
+👉 http://51.132.176.217/
+
+Backend (API):
+👉 http://51.132.176.217:5000/
+
+![interface of the app](./screenshots/09_frontend_customized_interface1.png) 
+*Interface showing the app from browser*
+
+![interface of the app](./screenshots/09_frontend_customized_interface2.png) 
+*Interface showing the down part of the app from browser*
+
+![successful login into the app](./screenshots/Frontend-login-success-screen.png) 
+*Successful login interface of the app*
+
+✅ Both services are now running on the Azure VM and accessible via the public IP address.
+
+**Challenges Faced & Solutions Implemented (Docker Compose on VM)**
+
+```
+Challenge
+
+The backend container failed to start initially because the .env file was not found in the VM environment.
+
+Solution Implemented
+
+Recreated the .env file inside /backend directory on the VM with correct MongoDB credentials.
+
+Challenge
+
+Pulling large images from Docker Hub was slow due to network latency.
+
+Solution Implemented
+
+Waited for completion and verified using sudo docker images before proceeding.
+```
+
+**✅ Outcome:**
+
+Both frontend and backend containers deployed successfully using Docker Compose.
+
+The app is live and accessible at http://51.132.176.217
 
 
+## Step 9: Setting Up GitHub Actions for CI/CD (Automated Deployment to Azure VM)
+
+**🎯 Objective:**
+
+To automate the process of building, testing, and deploying both frontend and backend Docker containers from GitHub to Docker Hub, and then deploying them automatically on the Azure Virtual Machine.
+
+1️⃣ Create the GitHub Actions Workflow File
+
+In your project directory, create the following folder structure (if not already existing):
+
+`.github/workflows/deploy.yml`
+
+Open (or create) the file `deploy.yml` and add the following workflow configuration:
+
+![Workflow display ](./screenshots/02_workflow_code_added1.png) 
+*Screenshot displaying the Workflow display*
+
+![Workflow display ](./screenshots/02_workflow_code_added2.png) 
+
+**2️⃣ Add GitHub Secrets**
+
+To avoid exposing credentials directly inside your workflow file, store all sensitive values in GitHub Secrets.
+
+Go to your project repository on GitHub →Settings → Secrets and Variables → Actions → New Repository Secret.
+
+2️⃣ Add GitHub Secrets
+
+To avoid exposing credentials directly inside your workflow file, store all sensitive values in GitHub Secrets.
+
+Go to your project repository on GitHub →Settings → Secrets and Variables → Actions → New Repository Secret.
+
+**Add the following:**
+
+```
+| **Secret Name**   | **Description**                                                 |
+| ----------------- | --------------------------------------------------------------- |
+| `Docker_username` | Your Docker Hub username                                        |
+| `Docker_password` | Docker Hub personal access token or password                    |
+| `Vm_Host`         | The public IP address of your Azure VM (e.g., `51.132.176.217`) |
+| `Vm_user`         | Azure VM username (e.g., `azureuser`)                           |
+| `Vm_ssh_key`      | Private SSH key content used for authentication                 |
+```
+
+**3️⃣ Explanation of the Pipeline**
+```
+| Step                      | Action                                                                     | 
+| ------------------------- | --------------------------------------------------------------------------- | 
+| `Checkout code`           | Uses the official GitHub Action to pull your repository.                    |             
+| `Setup Buildx`            | Enables advanced Docker build functionality for multi-platform support.     |             
+| `Login to Docker Hub`     | Authenticates your workflow using credentials stored as GitHub Secrets.     |             
+| `Build and Push Backend`  | Builds the backend image from `backend/` folder and pushes to Docker Hub.   |             
+| `Build and Push Frontend` | Builds the frontend image from `frontend/` folder and pushes to Docker Hub. |             
+```
 
 
+**4️⃣ Run and Monitor the Pipeline**
 
+- Once you push changes to your main branch:
+
+- Go to your GitHub repo → Actions tab
+
+- Click on CI/CD Pipeline - Build and Deploy Dockerized App
+
+- Monitor each stage (Build → Push → Deploy) in real time
+
+If successful, you’ll see green checkmarks ✅ for each job.
+
+**5️⃣ Verify Deployment**
+
+After the pipeline completes successfully, open your app in the browser:
+
+Frontend → http://51.132.176.217
+
+Backend API → http://51.132.176.217:5000
+
+✅ The app auto-updates each time you push new commits to GitHub.
+
+### Challenges Faced & Solutions Implemented (CI/CD Phase)
+
+**Challenge:**
+
+GitHub Action failed to log in to Docker Hub.
+
+**Solution Implemented:**
+
+Generated a new access token from Docker Hub and updated it under GitHub Secrets.
+
+**Challenge:**
+
+The deploy step took longer when images were large.
+
+**Solution Implemented**
+
+Optimized Dockerfiles and used caching to reduce image size.
+
+**Screenshots Showing Github Secrets Successfully Added**
+![Secrets Added ](./screenshots/github_secrets.png) 
+
+![Secrets Added ](./screenshots/github_actions_pipeline_success.png) 
+
+✅ Final Outcome:
+
+- Full CI/CD pipeline successfully implemented.
+
+- Every code push automatically rebuilds and redeploys the app on Azure VM.
+
+- Zero manual intervention needed for deployment.
+
+- Application remains live at http://51.132.176.217
 
 
 
