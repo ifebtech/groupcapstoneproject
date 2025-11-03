@@ -31,28 +31,23 @@ jobs:
 
       - name: Deploy to Azure VM
         uses: appleboy/ssh-action@master
-        env:
-          MONGODB_URL: ${{ secrets.MONGODB_URL }}
-          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
-          envs: MONGODB_URL,ACCESS_TOKEN_SECRET,DOCKER_USERNAME
           script: |
-            sudo docker pull $DOCKER_USERNAME/backend:v1
-            sudo docker pull $DOCKER_USERNAME/frontend:v1
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/backend:v1
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:v1
             sudo docker stop backend_container || true
             sudo docker rm backend_container || true
             sudo docker stop frontend_container || true
             sudo docker rm frontend_container || true
             sudo docker run -d --name backend_container \
-              -e MONGODB_URL="$MONGODB_URL" \
-              -e ACCESS_TOKEN_SECRET="$ACCESS_TOKEN_SECRET" \
-              $DOCKER_USERNAME/backend:v1
+              -e MONGODB_URL='mongodb+srv://admin:admin123@appproject.fc9xifh.mongodb.net/?appName=appproject' \
+              -e ACCESS_TOKEN_SECRET='Rj2S?RVe9[]8-dCS6A**&b5Tsg$gwbg~Bd{*QTK' \
+              ${{ secrets.DOCKER_USERNAME }}/backend:v1
             sleep 10
             sudo docker run -d --name frontend_container \
               --link backend_container \
               -p 80:80 \
-              $DOCKER_USERNAME/frontend:v1
+              ${{ secrets.DOCKER_USERNAME }}/frontend:v1
