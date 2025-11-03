@@ -1,6 +1,7 @@
 # Final Project Documentation Summary
 
 **Objective:**
+
 The objective of this project is to design, build, and deploy a two-tier web application consisting of a backend API and a frontend client, both containerized with Docker. The project integrates a continuous integration and continuous deployment (CI/CD) pipeline using GitHub Actions, and the final deployment is hosted on a Linux Virtual Machine (VM) on Microsoft Azure.
 
 **Executive summary**
