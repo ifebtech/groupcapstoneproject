@@ -35,23 +35,22 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
-          env:
-            MONGODB_URL: ${{ secrets.MONGODB_URL }}
-            ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           script: |
-            docker pull $DOCKER_USERNAME/backend:v1
-            docker pull $DOCKER_USERNAME/frontend:v1
+            export MONGODB_URL="${{ secrets.MONGODB_URL }}"
+            export ACCESS_TOKEN_SECRET="${{ secrets.ACCESS_TOKEN_SECRET }}"
+            export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
+            docker pull ${DOCKER_USERNAME}/backend:v1
+            docker pull ${DOCKER_USERNAME}/frontend:v1
             docker stop backend_container || true
             docker rm backend_container || true
             docker stop frontend_container || true
             docker rm frontend_container || true
             docker run -d --name backend_container \
-              -e MONGODB_URL="$MONGODB_URL" \
-              -e ACCESS_TOKEN_SECRET="$ACCESS_TOKEN_SECRET" \
-              $DOCKER_USERNAME/backend:v1
+              -e MONGODB_URL="${MONGODB_URL}" \
+              -e ACCESS_TOKEN_SECRET="${ACCESS_TOKEN_SECRET}" \
+              ${DOCKER_USERNAME}/backend:v1
             sleep 10
             docker run -d --name frontend_container \
               --link backend_container \
               -p 80:80 \
-              $DOCKER_USERNAME/frontend:v1
+              ${DOCKER_USERNAME}/frontend:v1
