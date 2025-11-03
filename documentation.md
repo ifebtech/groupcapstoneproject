@@ -190,7 +190,7 @@ This will:
 
  
 ![the containers started successfully ](./screenshots/07_containers_started.png)
-      *CLI view showing backend and froonened containers started successfully*
+      *CLI view showing backend and frontend containers started successfully*
 
 
 ⚠️ Warning and Error Observed
@@ -318,7 +318,7 @@ Now that .env exists, re-run your containers:
 
 - Containers now communicate correctly — backend ↔ MongoDB ↔ frontend.
 
-## Step 3: Frontend Customization**
+## Step 3: Frontend Customization
 
 **🎯 Objective**
 
@@ -399,6 +399,7 @@ Replace `*yourdockerhubusername*` with your actual Docker Hub username.
 Run the following commands:
 
 `docker push ifeanyi222/backend:v1`
+
 `docker push ifeanyi222/frontend:v1`
 
 **Screenshot**
@@ -668,6 +669,7 @@ Retrieve the pre-built backend and frontend images from Docker Hub and run them 
 **2️⃣ Pull your project images:**
 
 `sudo docker pull <yourdockerhubusername>/backend:v1`
+
 `sudo docker pull <yourdockerhubusername>/frontend:v1`
 
 **3️⃣ Verify that the images were downloaded successfully:**
@@ -785,6 +787,7 @@ Press CTRL + O, then ENTER, and CTRL + X to save and exit the editor.
 In your local environment, the Docker Compose file included build instructions like:
 
 `build: ./backend`
+
 `build: ./frontend`
 
 That meant images were being built directly from source code on your machine.
@@ -793,6 +796,7 @@ However, in a production VM environment, the images are already built and stored
 Instead, the Compose file here pulls prebuilt images using:
 
 `image: ifeanyi222/backend:v1`
+
 `image: ifeanyi222/frontend:v1`
 
 **✅ Summary of Difference:**
@@ -1063,9 +1067,13 @@ Added sleep 10 delay between backend and frontend container startup to allow bac
 **Final Outcome**
 
 ✅ Frontend and backend services successfully deployed and running on Azure VM.
+
 ✅ Automated pipeline functioning — updates from GitHub trigger full redeployment.
+
 ✅ MongoDB Atlas integration stable and connected to the backend API.
+
 ✅ Docker Hub hosting verified — images available publicly.
+
 ✅ Azure VM firewall configured — ports 22, 80, and 5000 open for SSH, HTTP, and API access.
 
 **Final Project Conclusion**
