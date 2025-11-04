@@ -26,26 +26,28 @@ This project demonstrates a **Dockerized 2-tier MERN application** (frontend + b
 dockerized-2tier-app/
 │
 ├── backend/
-│ ├── controllers/
-│ ├── models/
-│ ├── routes/
-│ ├── utils/
-│ ├── middlewares.js
-│ ├── .env
-│ ├── app.js
-│ └── package.json
+│   ├── controllers/           # Handles logic for incoming requests and responses
+│   ├── models/                # Defines database schemas and ORM models
+│   ├── routes/                # Contains route definitions that map URLs to controllers
+│   ├── utils/                 # Utility/helper functions
+│   ├── middlewares.js         # Middleware functions (e.g., authentication, validation)
+│   ├── .env                   # Environment variables for backend (API keys, DB URLs, etc.)
+│   ├── app.js                 # Main server file (entry point for the backend)
+│   └── package.json           # Backend dependencies and scripts
 │
 ├── frontend/
-│ ├── public/
-│ ├── src/
-│ ├── package.json
-│ ├── tailwind.config.js
-│ └── postcss.config.js
+│   ├── public/                # Static files (index.html, images, etc.)
+│   ├── src/                   # React source files (components, pages, hooks, etc.)
+│   ├── package.json           # Frontend dependencies and scripts
+│   ├── tailwind.config.js     # Tailwind CSS configuration
+│   └── postcss.config.js      # PostCSS setup for processing Tailwind
 │
-├── .github/workflows/deploy.yml
-├── docker-compose.yml
-├── README.md
-└── screenshots/
+├── .github/workflows/deploy.yml   # GitHub Actions workflow for CI/CD
+├── docker-compose.yml             # Orchestrates multi-container setup (frontend + backend)
+├── README.md                      # Main project overview and setup instructions
+├── documentation.md               # Detailed technical documentation and usage guide
+└── screenshots/                   # Contains images or screenshots for documentation
+
 ```
 
 
