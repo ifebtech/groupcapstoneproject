@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Tasks from '../components/Tasks';
 import MainLayout from '../layouts/MainLayout';
+
 const Home = () => {
   const authState = useSelector(state => state.authReducer);
   const { isLoggedIn } = authState;
@@ -24,12 +25,14 @@ const Home = () => {
     "Oluwajimi-Kolawale",
     "Ogbuoshi-Paul",
     "Bright-Kofi",
-    "Anyiam-Emmanuel"
+    "Anyiam-Emmanuel",
+    "Ejionye-Sylvaline"
   ];
 
   useEffect(() => {
     document.title = authState.isLoggedIn ? `${authState.user.name}'s Tasks - CC Group 4` : "Cloud Computing Group 4 Project";
   }, [authState]);
+
   return (
     <>
       <MainLayout>
@@ -78,4 +81,5 @@ const Home = () => {
     </>
   )
 }
+
 export default Home
